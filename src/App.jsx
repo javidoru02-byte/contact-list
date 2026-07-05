@@ -11,14 +11,21 @@ class App extends Component {
     this.setState((prevState) => ({
       users: [...prevState.users, user],
     }));
+  };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.users !== this.state.users) {
+      localStorage.setItem("users", JSON.stringify(this.state.users));
+    }
   }
 
   render() {
-    return (<>
-      <ContactForm addContact={this.addUser} />
-      <ContactList/>
-
-    </>);
+    return (
+      <>
+        <ContactForm addContact={this.addUser} toLocal={this.componentDidUpdate}/>
+        <ContactList />
+      </>
+    );
   }
 }
 

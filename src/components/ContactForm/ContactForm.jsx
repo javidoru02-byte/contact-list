@@ -13,11 +13,29 @@ class ContactForm extends Component {
       [event.target.name]: event.target.value,
     });
   };
+  
+  hendleSubmit = (event) => {
+    event.preventDefault();
+    const { firstName, lastName, email, phone } = this.state;
+    const newUser = {
+      firstName,
+      lastName,
+      email,
+      phone,
+    };
+    this.props.addContact(newUser);
+    this.setState({
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+    });
+  }
 
   render() {
     return (
       <div>
-        <form className="ccreate-contact" onSubmit={this.handleSubmit}>
+        <form className="ccreate-contact" onSubmit={this.hendleSubmit}>
           <input
             type="text"
             name="firstName"
@@ -47,7 +65,7 @@ class ContactForm extends Component {
             onChange={this.hendleChange}
           />
 
-          <button className="btn" onClick={this.handleSubmit}>
+          <button className="btn" onClick={this.hendleSubmit}>
             Add Contact
           </button>
         </form>
