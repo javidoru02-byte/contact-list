@@ -65,8 +65,12 @@ class ContactForm extends Component {
             onChange={this.hendleChange}
           />
 
-          <button className="btn" onClick={this.hendleSubmit}>
+          <button className="btn-add" onClick={this.hendleSubmit}>
             Add Contact
+          </button>
+
+          <button className="btn-del">
+            Delete Contact
           </button>
         </form>
       </div>

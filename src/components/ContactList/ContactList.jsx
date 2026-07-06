@@ -1,14 +1,19 @@
-
-import React, { Component } from 'react'
+import React, { Component } from "react";
 
 class ContactList extends Component {
   render() {
     return (
-      <div>
-        
-      </div>
-    )
+      <>
+        {this.props.users.map((user) => (
+          <div key={user.phone} className="contact-card">
+            <p>
+              {user.firstName} {user.lastName}
+            </p>
+          </div>
+        ))}
+      </>
+    );
   }
 }
 
-export default ContactList
+export default ContactList;

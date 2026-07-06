@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import ContactForm from "./components/ContactForm/ContactForm";
 import ContactList from "./components/ContactList/ContactList";
+import Header from "./components/Header/Header";
+import "./App.css";
 
 class App extends Component {
   state = {
@@ -19,12 +21,27 @@ class App extends Component {
     }
   }
 
+  componentDidMount() {
+    const users = JSON.parse(localStorage.getItem("users"));
+    if (users) {
+      this.setState({ users });
+    }
+  }
+  /*
+  deleteUser = (number) => {
+    this.setState({
+      users: this.state.users.filter((user) => user.phone !== number),
+    })
+  }
+    */
+
   render() {
     return (
-      <>
-        <ContactForm addContact={this.addUser} toLocal={this.componentDidUpdate}/>
-        <ContactList />
-      </>
+      <div className="App">
+        <Header />
+        <ContactForm addContact={this.addUser} />
+        <ContactList users={this.state.users} />
+      </div>
     );
   }
 }

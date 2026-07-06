@@ -1,0 +1,14 @@
+* {
+  box-sizing: border-box;
+}
+
+.App {
+  background-color: #f5f5f5;
+  border: 2px solid black;
+  padding: 20px;
+  border-radius: 5px;
+  width: 50%;
+  height: 700px;
+  margin-right: auto;
+  margin-left: auto;
+}
