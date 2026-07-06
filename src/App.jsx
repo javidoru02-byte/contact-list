@@ -39,8 +39,10 @@ class App extends Component {
     return (
       <div className="App">
         <Header />
-        <ContactForm addContact={this.addUser} />
-        <ContactList users={this.state.users} />
+        <div className="form-container">
+          <ContactList users={this.state.users} />
+          <ContactForm addContact={this.addUser} />
+        </div>
       </div>
     );
   }

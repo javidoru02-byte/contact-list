@@ -12,3 +12,11 @@
   margin-right: auto;
   margin-left: auto;
 }
+
+.form-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px;
+  border: 2px solid black;
+}
