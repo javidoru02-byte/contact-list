@@ -1,0 +1,52 @@
+* {
+  box-sizing: border-box;
+}
+
+.create-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  border: 2px solid black;
+  padding: 20px;
+  width: 100%;
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-container input {
+  width: 100%;
+  padding: 10px;
+  padding-right: 35px;
+  border: 2px solid black;
+  font-size: 16px;
+}
+
+.clear-btn {
+  position: absolute;
+  right: 8px;
+  width: 20px;
+  height: 20px;
+  border: 2px solid black;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.btn-holder {
+  display: flex;
+  margin-top: 10px;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.right-btn{
+    display: flex;
+    gap: 10px;
+}
