@@ -17,14 +17,41 @@ class ContactForm extends Component {
 
   hendleSubmit = (event) => {
     event.preventDefault();
-    const { firstName, lastName, email, phone } = this.state;
-    const newUser = {
-      firstName,
-      lastName,
-      email,
-      phone,
-    };
-    this.props.addContact(newUser);
+
+    if (
+      !this.state.firstName ||
+      !this.state.lastName ||
+      !this.state.email ||
+      !this.state.phone
+    ) {
+      return;
+    }
+
+    if (this.props.userToEdit !== null) {
+      this.props.updateUser({
+        firstName: this.state.firstName,
+        lastName: this.state.lastName,
+        email: this.state.email,
+        phone: this.state.phone,
+      });
+    } else {
+      const { firstName, lastName, email, phone } = this.state;
+      const newUser = {
+        firstName,
+        lastName,
+        email,
+        phone,
+      };
+      this.props.addContact(newUser);
+      this.setState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+      });
+    }
+  };
+  clearForm = () => {
     this.setState({
       firstName: "",
       lastName: "",
@@ -32,6 +59,20 @@ class ContactForm extends Component {
       phone: "",
     });
   };
+  componentDidUpdate(prevProps) {
+    if (
+      prevProps.userToEdit !== this.props.userToEdit &&
+      this.props.userToEdit
+    ) {
+      const { firstName, lastName, email, phone } = this.props.userToEdit;
+      this.setState({
+        firstName,
+        lastName,
+        email,
+        phone,
+      });
+    }
+  }
 
   render() {
     return (
@@ -108,7 +149,9 @@ class ContactForm extends Component {
 
         <div className="btn-holder">
           <div className="left-btn">
-            <button className="btn-new">New</button>
+            <button className="btn-new" onClick={this.clearForm}>
+              New
+            </button>
           </div>
           <div className="right-btn">
             <button className="btn-add" onClick={this.hendleSubmit}>

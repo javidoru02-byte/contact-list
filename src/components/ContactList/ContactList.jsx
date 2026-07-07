@@ -6,10 +6,15 @@ class ContactList extends Component {
       <div className="contact-list">
         {this.props.users.map((user) => (
           <div key={user.phone} className="contact-card">
-            <p className="contact-name">
+            <p className="contact-name" onDoubleClick={() => this.props.editUser(user)}>
               {user.firstName} {user.lastName}
             </p>
-            <span className="contact-delete">X</span>
+            <span
+              className="contact-delete"
+              onClick={() => this.props.deleteUser(user.phone)}
+            >
+              X
+            </span>
           </div>
         ))}
       </div>

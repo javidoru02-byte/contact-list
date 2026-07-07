@@ -7,6 +7,7 @@ import "./App.css";
 class App extends Component {
   state = {
     users: [],
+    userToEdit: null,
   };
 
   addUser = (user) => {
@@ -27,21 +28,43 @@ class App extends Component {
       this.setState({ users });
     }
   }
-  /*
+
   deleteUser = (number) => {
     this.setState({
       users: this.state.users.filter((user) => user.phone !== number),
-    })
-  }
-    */
+    });
+  };
+
+  editUser = (user) => {
+    this.setState({
+      userToEdit: user,
+    });
+  };
+
+  updateUser = (updatedUser) => {
+    this.setState((prevState) => ({
+      users: prevState.users.map((user) =>
+        user.phone === updatedUser.phone ? updatedUser : user,
+      ),
+      userToEdit: null,
+    }));
+  };
 
   render() {
     return (
       <div className="App">
         <Header />
         <div className="form-container">
-          <ContactList users={this.state.users} />
-          <ContactForm addContact={this.addUser} />
+          <ContactList
+            users={this.state.users}
+            deleteUser={this.deleteUser}
+            editUser={this.editUser}
+          />
+          <ContactForm
+            addContact={this.addUser}
+            userToEdit={this.state.userToEdit}
+            updateUser={this.updateUser}
+          />
         </div>
       </div>
     );
