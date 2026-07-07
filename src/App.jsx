@@ -12,7 +12,7 @@ class App extends Component {
 
   addUser = (user) => {
     this.setState((prevState) => ({
-      users: [...prevState.users, user],
+      users: [...prevState.users, { ...user, id: Date.now().toString() }],
     }));
   };
 
@@ -29,9 +29,9 @@ class App extends Component {
     }
   }
 
-  deleteUser = (number) => {
+  deleteUser = (id) => {
     this.setState({
-      users: this.state.users.filter((user) => user.phone !== number),
+      users: this.state.users.filter((user) => user.id !== id),
     });
   };
 
@@ -44,10 +44,16 @@ class App extends Component {
   updateUser = (updatedUser) => {
     this.setState((prevState) => ({
       users: prevState.users.map((user) =>
-        user.phone === updatedUser.phone ? updatedUser : user,
+        user.id === updatedUser.id ? updatedUser : user,
       ),
-      userToEdit: null,
+      userToEdit: updatedUser,
     }));
+  };
+
+  cancelEdit = () => {
+    this.setState({
+      userToEdit: null,
+    });
   };
 
   render() {
@@ -65,6 +71,7 @@ class App extends Component {
             userToEdit={this.state.userToEdit}
             updateUser={this.updateUser}
             deleteUser={this.deleteUser}
+            cancelEdit={this.cancelEdit}
           />
         </div>
       </div>

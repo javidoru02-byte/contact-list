@@ -9,13 +9,14 @@ class ContactForm extends Component {
     phone: "",
   };
 
-  hendleChange = (event) => {
+  handleChange = (event) => {
     this.setState({
       [event.target.name]: event.target.value,
     });
   };
 
-  hendleSubmit = (event) => {
+  handleSubmit = (event) => {
+    const { firstName, lastName, email, phone } = this.state;
     event.preventDefault();
 
     if (
@@ -27,28 +28,17 @@ class ContactForm extends Component {
       return;
     }
 
-    if (this.props.userToEdit !== null) {
+    if (this.props.userToEdit) {
       this.props.updateUser({
+        id: this.props.userToEdit.id,
         firstName: this.state.firstName,
         lastName: this.state.lastName,
         email: this.state.email,
         phone: this.state.phone,
       });
     } else {
-      const { firstName, lastName, email, phone } = this.state;
-      const newUser = {
-        firstName,
-        lastName,
-        email,
-        phone,
-      };
-      this.props.addContact(newUser);
-      this.setState({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-      });
+      this.props.addContact({ firstName, lastName, email, phone });
+      this.clearForm();
     }
   };
   clearForm = () => {
@@ -59,32 +49,46 @@ class ContactForm extends Component {
       phone: "",
     });
   };
+
+  handleNewClick = () => {
+    this.clearForm();
+    this.props.cancelEdit();
+  };
+
+  handleDeleteClick = () => {
+    if (this.props.userToEdit) {
+      this.props.deleteUser(this.props.userToEdit.id);
+      this.clearForm();
+      this.props.cancelEdit();
+    }
+  };
+
   componentDidUpdate(prevProps) {
-    if (
-      prevProps.userToEdit !== this.props.userToEdit &&
-      this.props.userToEdit
-    ) {
-      const { firstName, lastName, email, phone } = this.props.userToEdit;
-      this.setState({
-        firstName,
-        lastName,
-        email,
-        phone,
-      });
+    if (prevProps.userToEdit !== this.props.userToEdit) {
+      if (this.props.userToEdit) {
+        const { firstName, lastName, email, phone } = this.props.userToEdit;
+        this.setState({
+          firstName,
+          lastName,
+          email,
+          phone,
+        });
+      } else {
+        this.clearForm();
+      }
     }
   }
-
   render() {
     return (
       <div>
-        <form className="create-contact" onSubmit={this.hendleSubmit}>
+        <form className="create-contact" onSubmit={this.handleSubmit}>
           <div className="input-container">
             <input
               type="text"
               name="firstName"
               placeholder="FirstName"
               value={this.state.firstName}
-              onChange={this.hendleChange}
+              onChange={this.handleChange}
             />
             <button
               type="button"
@@ -101,7 +105,7 @@ class ContactForm extends Component {
               name="lastName"
               placeholder="LastName"
               value={this.state.lastName}
-              onChange={this.hendleChange}
+              onChange={this.handleChange}
             />
             <button
               type="button"
@@ -118,7 +122,7 @@ class ContactForm extends Component {
               name="email"
               placeholder="Email"
               value={this.state.email}
-              onChange={this.hendleChange}
+              onChange={this.handleChange}
             />
             <button
               type="button"
@@ -135,7 +139,7 @@ class ContactForm extends Component {
               name="phone"
               placeholder="Phone"
               value={this.state.phone}
-              onChange={this.hendleChange}
+              onChange={this.handleChange}
             />
             <button
               type="button"
@@ -149,23 +153,19 @@ class ContactForm extends Component {
 
         <div className="btn-holder">
           <div className="left-btn">
-            <button className="btn-new" onClick={this.clearForm}>
+            <button className="btn-new" onClick={this.handleNewClick}>
               New
             </button>
           </div>
           <div className="right-btn">
-            <button className="btn-add" onClick={this.hendleSubmit}>
-              Add
+            <button className="btn-add" onClick={this.handleSubmit}>
+              Save
             </button>
 
             <button
               className="btn-del"
               style={this.props.userToEdit ? {} : { display: "none" }}
-              onClick={() => {
-                if (this.props.userToEdit) {
-                  this.props.deleteUser(this.props.userToEdit.phone);
-                }
-              }}
+              onClick={this.handleDeleteClick}
             >
               Delete
             </button>
