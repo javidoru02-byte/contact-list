@@ -64,6 +64,7 @@ class App extends Component {
             addContact={this.addUser}
             userToEdit={this.state.userToEdit}
             updateUser={this.updateUser}
+            deleteUser={this.deleteUser}
           />
         </div>
       </div>

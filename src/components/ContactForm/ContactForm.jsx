@@ -158,7 +158,17 @@ class ContactForm extends Component {
               Add
             </button>
 
-            <button className="btn-del">Delete</button>
+            <button
+              className="btn-del"
+              style={this.props.userToEdit ? {} : { display: "none" }}
+              onClick={() => {
+                if (this.props.userToEdit) {
+                  this.props.deleteUser(this.props.userToEdit.phone);
+                }
+              }}
+            >
+              Delete
+            </button>
           </div>
         </div>
       </div>
