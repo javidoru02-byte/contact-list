@@ -2,19 +2,8 @@ import React, { Component } from "react";
 import "./ContactForm.css";
 
 class ContactForm extends Component {
-  state = {
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-  };
 
-  handleChange = (event) => {
-    this.setState({
-      [event.target.name]: event.target.value,
-    });
-  };
-
+ 
   handleSubmit = (event) => {
     const { firstName, lastName, email, phone } = this.state;
     event.preventDefault();
@@ -63,21 +52,6 @@ class ContactForm extends Component {
     }
   };
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.userToEdit !== this.props.userToEdit) {
-      if (this.props.userToEdit) {
-        const { firstName, lastName, email, phone } = this.props.userToEdit;
-        this.setState({
-          firstName,
-          lastName,
-          email,
-          phone,
-        });
-      } else {
-        this.clearForm();
-      }
-    }
-  }
   render() {
     return (
       <div>

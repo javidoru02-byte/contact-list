@@ -12,7 +12,19 @@ class App extends Component {
       lastName: "",
       email: "",
       phone: "",
+      id: null,
     },
+  };
+
+  handleChange = (event) => {
+  const { name, value } = event.target;
+  this.setState((prevState) => ({
+    userToEdit: {
+      ...prevState.userToEdit,
+      [name]: value,
+    },
+  }));
+
   };
 
   addUser = (user) => {
