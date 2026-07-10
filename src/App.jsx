@@ -7,7 +7,12 @@ import "./App.css";
 class App extends Component {
   state = {
     users: [],
-    userToEdit: null,
+    userToEdit: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+    },
   };
 
   addUser = (user) => {
