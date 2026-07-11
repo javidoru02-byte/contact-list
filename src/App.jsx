@@ -1,43 +1,23 @@
 import React, { Component } from "react";
 import ContactForm from "./components/ContactForm/ContactForm";
 import ContactList from "./components/ContactList/ContactList";
+import { nanoid } from "nanoid";
 import Header from "./components/Header/Header";
 import "./App.css";
+
+const INITIAL_STATE = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+  id: null,
+};
 
 class App extends Component {
   state = {
     users: [],
-    userToEdit: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      id: null,
-    },
+    userToEdit: { ...INITIAL_STATE },
   };
-
-  handleChange = (event) => {
-  const { name, value } = event.target;
-  this.setState((prevState) => ({
-    userToEdit: {
-      ...prevState.userToEdit,
-      [name]: value,
-    },
-  }));
-
-  };
-
-  addUser = (user) => {
-    this.setState((prevState) => ({
-      users: [...prevState.users, { ...user, id: Date.now().toString() }],
-    }));
-  };
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.users !== this.state.users) {
-      localStorage.setItem("users", JSON.stringify(this.state.users));
-    }
-  }
 
   componentDidMount() {
     const users = JSON.parse(localStorage.getItem("users"));
@@ -46,16 +26,48 @@ class App extends Component {
     }
   }
 
-  deleteUser = (id) => {
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.users !== this.state.users) {
+      this.saveUsersToLocalStorage();
+    }
+  }
+
+  saveUsersToLocalStorage = () => {
+    localStorage.setItem("users", JSON.stringify(this.state.users));
+  };
+
+  handleChange = (event) => {
+    const { name, value } = event.target;
+    this.setState((prevState) => ({
+      userToEdit: {
+        ...prevState.userToEdit,
+        [name]: value,
+      },
+    }));
+  };
+
+  handleSubmit = (event) => {
+    event.preventDefault();
+    if (this.state.userToEdit.id) {
+      this.updateUser(this.state.userToEdit);
+    } else {
+      this.addUser(this.state.userToEdit);
+    }
+  };
+
+  cancelEdit = () => {
     this.setState({
-      users: this.state.users.filter((user) => user.id !== id),
+      userToEdit: {
+        ...INITIAL_STATE,
+      },
     });
   };
 
-  editUser = (user) => {
-    this.setState({
-      userToEdit: user,
-    });
+  addUser = (user) => {
+    this.setState((prevState) => ({
+      users: [...prevState.users, { ...user, id: nanoid() }],
+      userToEdit: { ...INITIAL_STATE },
+    }));
   };
 
   updateUser = (updatedUser) => {
@@ -63,13 +75,24 @@ class App extends Component {
       users: prevState.users.map((user) =>
         user.id === updatedUser.id ? updatedUser : user,
       ),
-      userToEdit: updatedUser,
+      userToEdit: { ...INITIAL_STATE },
     }));
   };
 
-  cancelEdit = () => {
+  deleteUser = (id) => {
+    this.setState((prevState) => {
+      const updatedUsers = prevState.users.filter((user) => user.id !== id);
+      const shouldClearForm = prevState.userToEdit.id === id;
+      return {
+        users: updatedUsers,
+        userToEdit: shouldClearForm ? { ...INITIAL_STATE } : prevState.userToEdit,
+      };
+    });
+  };
+
+  editUser = (user) => {
     this.setState({
-      userToEdit: null,
+      userToEdit: user,
     });
   };
 
@@ -84,11 +107,11 @@ class App extends Component {
             editUser={this.editUser}
           />
           <ContactForm
-            addContact={this.addUser}
             userToEdit={this.state.userToEdit}
-            updateUser={this.updateUser}
-            deleteUser={this.deleteUser}
+            handleChange={this.handleChange}
+            handleSubmit={this.handleSubmit}
             cancelEdit={this.cancelEdit}
+            deleteUser={this.deleteUser}
           />
         </div>
       </div>
