@@ -2,30 +2,60 @@ import { Component } from "react";
 import "./ContactForm.css";
 
 class ContactForm extends Component {
+  state = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    id: null,
+  };
+
+  componentDidMount() {
+    this.setState({ ...this.props.userToEdit });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.userToEdit !== this.props.userToEdit) {
+      this.setState({ ...this.props.userToEdit });
+    }
+  }
+
+  handleChange = (event) => {
+    const { name, value } = event.target;
+    this.setState({ [name]: value });
+  };
+
+  handleSubmit = (event) => {
+    event.preventDefault();
+    const { firstName, lastName, email, phone, id } = this.state;
+    const user = { firstName, lastName, email, phone, id };
+    if (id) {
+      this.props.updateUser(user);
+    } else {
+      this.props.addUser(user);
+    }
+  };
+
   render() {
-    const { firstName, lastName, email, phone, id } = this.props.userToEdit;
+    const { firstName, lastName, email, phone, id } = this.state;
     const isFormInvalid =
       !firstName.trim() || !lastName.trim() || !email.trim() || !phone.trim();
 
     return (
       <div>
-        <form className="create-contact" onSubmit={this.props.handleSubmit}>
+        <form className="create-contact" onSubmit={this.handleSubmit}>
           <div className="input-container">
             <input
               type="text"
               name="firstName"
               placeholder="FirstName"
               value={firstName}
-              onChange={this.props.handleChange}
+              onChange={this.handleChange}
             />
             <button
               type="button"
               className="clear-btn"
-              onClick={() =>
-                this.props.handleChange({
-                  target: { name: "firstName", value: "" },
-                })
-              }
+              onClick={() => this.setState({ firstName: "" })}
             >
               x
             </button>
@@ -37,16 +67,12 @@ class ContactForm extends Component {
               name="lastName"
               placeholder="LastName"
               value={lastName}
-              onChange={this.props.handleChange}
+              onChange={this.handleChange}
             />
             <button
               type="button"
               className="clear-btn"
-              onClick={() =>
-                this.props.handleChange({
-                  target: { name: "lastName", value: "" },
-                })
-              }
+              onClick={() => this.setState({ lastName: "" })}
             >
               x
             </button>
@@ -58,16 +84,12 @@ class ContactForm extends Component {
               name="email"
               placeholder="Email"
               value={email}
-              onChange={this.props.handleChange}
+              onChange={this.handleChange}
             />
             <button
               type="button"
               className="clear-btn"
-              onClick={() =>
-                this.props.handleChange({
-                  target: { name: "email", value: "" },
-                })
-              }
+              onClick={() => this.setState({ email: "" })}
             >
               x
             </button>
@@ -79,16 +101,12 @@ class ContactForm extends Component {
               name="phone"
               placeholder="Phone"
               value={phone}
-              onChange={this.props.handleChange}
+              onChange={this.handleChange}
             />
             <button
               type="button"
               className="clear-btn"
-              onClick={() =>
-                this.props.handleChange({
-                  target: { name: "phone", value: "" },
-                })
-              }
+              onClick={() => this.setState({ phone: "" })}
             >
               x
             </button>
@@ -104,7 +122,7 @@ class ContactForm extends Component {
           <div className="right-btn">
             <button
               className="btn-add"
-              onClick={this.props.handleSubmit}
+              onClick={this.handleSubmit}
               disabled={isFormInvalid}
             >
               Save

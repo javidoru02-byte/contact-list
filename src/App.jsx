@@ -35,25 +35,7 @@ class App extends Component {
     localStorage.setItem("users", JSON.stringify(this.state.users));
   };
 
-  handleChange = (event) => {
-    const { name, value } = event.target;
-    this.setState((prevState) => ({
-      userToEdit: {
-        ...prevState.userToEdit,
-        [name]: value,
-      },
-    }));
-  };
-
-  handleSubmit = (event) => {
-    event.preventDefault();
-    if (this.state.userToEdit.id) {
-      this.updateUser(this.state.userToEdit);
-    } else {
-      this.addUser(this.state.userToEdit);
-    }
-  };
-
+ 
   cancelEdit = () => {
     this.setState({
       userToEdit: {
@@ -110,10 +92,10 @@ class App extends Component {
           />
           <ContactForm
             userToEdit={this.state.userToEdit}
-            handleChange={this.handleChange}
-            handleSubmit={this.handleSubmit}
             cancelEdit={this.cancelEdit}
             deleteUser={this.deleteUser}
+            addUser={this.addUser}
+            updateUser={this.updateUser}
           />
         </div>
       </div>
