@@ -1,8 +1,7 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import ContactForm from "./components/ContactForm/ContactForm";
 import ContactList from "./components/ContactList/ContactList";
 import { nanoid } from "nanoid";
-import Header from "./components/Header/Header";
 import "./App.css";
 
 const INITIAL_STATE = {
@@ -85,7 +84,9 @@ class App extends Component {
       const shouldClearForm = prevState.userToEdit.id === id;
       return {
         users: updatedUsers,
-        userToEdit: shouldClearForm ? { ...INITIAL_STATE } : prevState.userToEdit,
+        userToEdit: shouldClearForm
+          ? { ...INITIAL_STATE }
+          : prevState.userToEdit,
       };
     });
   };
@@ -99,7 +100,8 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Header />
+        <h1>Contact List</h1>
+
         <div className="form-container">
           <ContactList
             users={this.state.users}

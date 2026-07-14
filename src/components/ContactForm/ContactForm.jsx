@@ -1,10 +1,11 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import "./ContactForm.css";
 
 class ContactForm extends Component {
   render() {
     const { firstName, lastName, email, phone, id } = this.props.userToEdit;
-    const isFormInvalid = !firstName.trim() || !lastName.trim() || !email.trim() || !phone.trim();
+    const isFormInvalid =
+      !firstName.trim() || !lastName.trim() || !email.trim() || !phone.trim();
 
     return (
       <div>
