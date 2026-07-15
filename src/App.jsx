@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { useState, useEffect } from "react";
 import ContactForm from "./components/ContactForm/ContactForm";
 import ContactList from "./components/ContactList/ContactList";
 import { nanoid } from "nanoid";
@@ -12,95 +12,74 @@ const INITIAL_STATE = {
   id: null,
 };
 
-class App extends Component {
-  state = {
-    users: [],
-    userToEdit: { ...INITIAL_STATE },
-  };
+function App() {
+  const [users, setUsers] = useState([]);
+  const [userToEdit, setUserToEdit] = useState({ ...INITIAL_STATE });
 
-  componentDidMount() {
-    const users = JSON.parse(localStorage.getItem("users"));
-    if (users) {
-      this.setState({ users });
+  useEffect(() => {
+    const userFromLocalStorage = localStorage.getItem("users");
+    if (userFromLocalStorage) {
+      // eslint-disable-next-line
+      setUsers(JSON.parse(userFromLocalStorage)); //я зрозумів що тут може бути помилка припередачі даних але я не зрозумів я к спіймати її в try catch
     }
-  }
+  }, []);
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.users !== this.state.users) {
-      this.saveUsersToLocalStorage();
-    }
-  }
+  useEffect(() => {
+    localStorage.setItem("users", JSON.stringify(users));
+  }, [users]);
 
-  saveUsersToLocalStorage = () => {
-    localStorage.setItem("users", JSON.stringify(this.state.users));
+  const cancelEdit = () => {
+    setUserToEdit({ ...INITIAL_STATE });
   };
 
- 
-  cancelEdit = () => {
-    this.setState({
-      userToEdit: {
-        ...INITIAL_STATE,
-      },
-    });
+  const editUser = (user) => {
+    setUserToEdit(user);
   };
 
-  addUser = (user) => {
-    this.setState((prevState) => ({
-      users: [...prevState.users, { ...user, id: nanoid() }],
-      userToEdit: { ...INITIAL_STATE },
-    }));
+  const addUser = (user) => {
+    const newUser = { ...user, id: nanoid() };
+    setUsers([...users, newUser]);
+    setUserToEdit({ ...INITIAL_STATE });
   };
 
-  updateUser = (updatedUser) => {
-    this.setState((prevState) => ({
-      users: prevState.users.map((user) =>
+  const updateUser = (updatedUser) => {
+    setUsers((prevUsers) =>
+      prevUsers.map((user) =>
         user.id === updatedUser.id ? updatedUser : user,
       ),
-      userToEdit: { ...INITIAL_STATE },
-    }));
-  };
-
-  deleteUser = (id) => {
-    this.setState((prevState) => {
-      const updatedUsers = prevState.users.filter((user) => user.id !== id);
-      const shouldClearForm = prevState.userToEdit.id === id;
-      return {
-        users: updatedUsers,
-        userToEdit: shouldClearForm
-          ? { ...INITIAL_STATE }
-          : prevState.userToEdit,
-      };
-    });
-  };
-
-  editUser = (user) => {
-    this.setState({
-      userToEdit: user,
-    });
-  };
-
-  render() {
-    return (
-      <div className="App">
-        <h1>Contact List</h1>
-
-        <div className="form-container">
-          <ContactList
-            users={this.state.users}
-            deleteUser={this.deleteUser}
-            editUser={this.editUser}
-          />
-          <ContactForm
-            userToEdit={this.state.userToEdit}
-            cancelEdit={this.cancelEdit}
-            deleteUser={this.deleteUser}
-            addUser={this.addUser}
-            updateUser={this.updateUser}
-          />
-        </div>
-      </div>
     );
-  }
+    setUserToEdit({ ...INITIAL_STATE });
+  };
+
+  const deleteUser = (userToDelateId) => {
+    setUsers((prevUsers) =>
+      prevUsers.filter((user) => user.id !== userToDelateId),
+    );
+    if (userToDelateId === userToEdit.id) {
+      setUserToEdit({ ...INITIAL_STATE });
+    }
+  };
+
+  return (
+    <div className="App">
+      <h1>Contact List</h1>
+
+      <div className="form-container">
+        <ContactList
+          users={users}
+          deleteUser={deleteUser}
+          editUser={editUser}
+        />
+        <ContactForm
+          userToEdit={userToEdit}
+          cancelEdit={cancelEdit}
+          deleteUser={deleteUser}
+          addUser={addUser}
+          updateUser={updateUser}
+        />
+      </div>
+    </div>
+  );
 }
 
 export default App;
