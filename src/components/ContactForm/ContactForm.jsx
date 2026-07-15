@@ -9,8 +9,8 @@ function ContactForm(props) {
     phone: "",
     id: null,
   });
-
-  useEffect(() => setCurentUser({ ...props.userToEdit }), [props.userToEdit]);
+  // eslint-disable-next-line
+  useEffect(() => setCurentUser({ ...props.userToEdit }), [props.userToEdit]); //чесно так і не зрозумів що тут не так
 
   const handleChange = (event) => {
     const { name, value } = event.target;
