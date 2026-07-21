@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import ContactForm from "./components/ContactForm/ContactForm";
 import ContactList from "./components/ContactList/ContactList";
-import { nanoid } from "nanoid";
+import axios from "axios";
 import "./App.css";
+const dbURL = "http://localhost:5000/users";
 
 const INITIAL_STATE = {
   firstName: "",
@@ -17,18 +18,16 @@ function App() {
   const [userToEdit, setUserToEdit] = useState({ ...INITIAL_STATE });
 
   useEffect(() => {
-    const userFromLocalStorage = localStorage.getItem("users");
-    if (userFromLocalStorage) {
-      // eslint-disable-next-line
-      setUsers(JSON.parse(userFromLocalStorage));
-    } else {
-      setUsers([]);
-    }
+    const fethUsers = async () => {
+      try {
+        const resp = await axios.get(dbURL);
+        setUsers(resp.data);
+      } catch (error) {
+        console.error("Неможливо завантажити користувача", error);
+      }
+    };
+    fethUsers();
   }, []);
-
-  const putIntoLocal = (dateToSave) => {
-    localStorage.setItem("users", JSON.stringify(dateToSave));
-  };
 
   const cancelEdit = () => {
     setUserToEdit({ ...INITIAL_STATE });
@@ -38,29 +37,39 @@ function App() {
     setUserToEdit(user);
   };
 
-  const addUser = (user) => {
-    const newUser = { ...user, id: nanoid() };
-    const updetedUser = [...users, newUser];
-    setUsers(updetedUser);
-    putIntoLocal(updetedUser);
-    setUserToEdit({ ...INITIAL_STATE });
-  };
-
-  const updateUser = (updatedUser) => {
-    const updatedUsers = users.map((user) =>
-      user.id === updatedUser.id ? updatedUser : user,
-    );
-    setUsers(updatedUsers);
-    putIntoLocal(updatedUsers);
-    setUserToEdit({ ...INITIAL_STATE });
-  };
-
-  const deleteUser = (userToDelateId) => {
-    const updatedUsers = users.filter((user) => user.id !== userToDelateId);
-    setUsers(updatedUsers);
-    putIntoLocal(updatedUsers);
-    if (userToDelateId === userToEdit.id) {
+  const addUser = async (user) => {
+    try {
+      const resp = await axios.post(dbURL, user);
+      setUsers((prevUsers) => [...prevUsers, resp.data]);
       setUserToEdit({ ...INITIAL_STATE });
+    } catch (error) {
+      console.error("помилка при додаванні", error);
+    }
+  };
+
+  const updateUser = async (updatedUser) => {
+    try {
+      const resp = await axios.put(`${dbURL}/${updatedUser.id}`, updatedUser);
+      setUsers((prevUsers) =>
+        prevUsers.map((u) => (u.id === updatedUser.id ? resp.data : u)),
+      );
+      setUserToEdit({ ...INITIAL_STATE });
+    } catch (error) {
+      console.error("помилка при оновлені", error);
+    }
+  };
+
+  const deleteUser = async (userToDelateId) => {
+    try {
+      await axios.delete(`${dbURL}/${userToDelateId}`);
+
+      setUsers((prevUsers) => prevUsers.filter((u) => u.id !== userToDelateId));
+
+      if (userToDelateId === userToEdit.id) {
+        setUserToEdit({ ...INITIAL_STATE });
+      }
+    } catch (error) {
+      console.error("помилка при видаленні", error);
     }
   };
 

@@ -1,0 +1,12 @@
+{
+  "users": [
+    {
+      "firstName": "david",
+      "lastName": "zhuchenko",
+      "email": "javidoru02@gmail.com",
+      "phone": "0933679709",
+      "id": "yk60m_cIICA"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
