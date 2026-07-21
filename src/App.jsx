@@ -53,7 +53,7 @@ function App() {
       setUsers((prevUsers) =>
         prevUsers.map((u) => (u.id === updatedUser.id ? resp.data : u)),
       );
-      setUserToEdit({ ...INITIAL_STATE });
+      setUserToEdit(resp.data);
     } catch (error) {
       console.error("помилка при оновлені", error);
     }
