@@ -20,13 +20,15 @@ function App() {
     const userFromLocalStorage = localStorage.getItem("users");
     if (userFromLocalStorage) {
       // eslint-disable-next-line
-      setUsers(JSON.parse(userFromLocalStorage)); //я зрозумів що тут може бути помилка припередачі даних але я не зрозумів я к спіймати її в try catch
+      setUsers(JSON.parse(userFromLocalStorage));
+    } else {
+      setUsers([]);
     }
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem("users", JSON.stringify(users));
-  }, [users]);
+  const putIntoLocal = (dateToSave) => {
+    localStorage.setItem("users", JSON.stringify(dateToSave));
+  };
 
   const cancelEdit = () => {
     setUserToEdit({ ...INITIAL_STATE });
@@ -38,23 +40,25 @@ function App() {
 
   const addUser = (user) => {
     const newUser = { ...user, id: nanoid() };
-    setUsers([...users, newUser]);
+    const updetedUser = [...users, newUser];
+    setUsers(updetedUser);
+    putIntoLocal(updetedUser);
     setUserToEdit({ ...INITIAL_STATE });
   };
 
   const updateUser = (updatedUser) => {
-    setUsers((prevUsers) =>
-      prevUsers.map((user) =>
-        user.id === updatedUser.id ? updatedUser : user,
-      ),
+    const updatedUsers = users.map((user) =>
+      user.id === updatedUser.id ? updatedUser : user,
     );
+    setUsers(updatedUsers);
+    putIntoLocal(updatedUsers);
     setUserToEdit({ ...INITIAL_STATE });
   };
 
   const deleteUser = (userToDelateId) => {
-    setUsers((prevUsers) =>
-      prevUsers.filter((user) => user.id !== userToDelateId),
-    );
+    const updatedUsers = users.filter((user) => user.id !== userToDelateId);
+    setUsers(updatedUsers);
+    putIntoLocal(updatedUsers);
     if (userToDelateId === userToEdit.id) {
       setUserToEdit({ ...INITIAL_STATE });
     }

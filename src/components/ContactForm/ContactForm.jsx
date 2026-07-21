@@ -10,7 +10,7 @@ function ContactForm(props) {
     id: null,
   });
   // eslint-disable-next-line
-  useEffect(() => setCurentUser({ ...props.userToEdit }), [props.userToEdit]); //чесно так і не зрозумів що тут не так
+  useEffect(() => setCurentUser({ ...props.userToEdit }), [props.userToEdit]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -19,12 +19,10 @@ function ContactForm(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const { firstName, lastName, email, phone, id } = curentUser;
-    const user = { firstName, lastName, email, phone, id };
     if (id) {
-      props.updateUser(user);
+      props.updateUser(curentUser);
     } else {
-      props.addUser(user);
+      props.addUser(curentUser);
     }
   };
 
