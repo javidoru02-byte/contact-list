@@ -15,7 +15,9 @@
     "json-server": "^1.0.0-beta.15",
     "nanoid": "^5.1.16",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "react-dom": "^19.2.7",
+    "react-redux": "^9.3.0",
+    "redux": "^5.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
