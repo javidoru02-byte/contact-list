@@ -1,19 +1,39 @@
 import "./ContactList.css";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  getUsers,
+  delateUsers,
+  setUserToEdit,
+} from "../../store/action/contactActions";
 
-function ContactList(props) {
+export const ContactList = () => {
+  const dispatch = useDispatch();
+  const contacts = useSelector((state) => state.contacts);
+
+  useEffect(() => {
+    dispatch(getUsers());
+  }, [dispatch]);
+
+  const hendleDoubleClick = (contact) => {
+    //console.log("Клік спрацював", contact);
+    dispatch(setUserToEdit(contact));
+  };
+
   return (
     <div className="contact-list">
-      {props.users.map((user) => (
-        <div key={user.id} className="contact-card">
+      {contacts.map((contact) => (
+        <div key={contact.id} className="contact-card">
           <p
             className="contact-name"
-            onDoubleClick={() => props.editUser(user)}
+            onDoubleClick={() => hendleDoubleClick(contact)}
           >
-            {user.firstName} {user.lastName}
+            {contact.firstName} {contact.lastName}
           </p>
+
           <span
             className="contact-delete"
-            onClick={() => props.deleteUser(user.id)}
+            onClick={() => dispatch(delateUsers(contact.id))}
           >
             X
           </span>
@@ -21,6 +41,6 @@ function ContactList(props) {
       ))}
     </div>
   );
-}
+};
 
 export default ContactList;

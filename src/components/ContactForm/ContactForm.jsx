@@ -1,7 +1,17 @@
 import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  addContact,
+  updateUser,
+  delateUsers,
+  setUserToEdit,
+} from "../../store/action/contactActions";
 import "./ContactForm.css";
 
-function ContactForm(props) {
+function ContactForm() {
+  const dispatch = useDispatch();
+  const userToEdit = useSelector((state) => state.userToEdit);
+
   const [curentUser, setCurentUser] = useState({
     firstName: "",
     lastName: "",
@@ -9,8 +19,21 @@ function ContactForm(props) {
     phone: "",
     id: null,
   });
-  // eslint-disable-next-line
-  useEffect(() => setCurentUser({ ...props.userToEdit }), [props.userToEdit]);
+
+  useEffect(() => {
+    if (userToEdit) {
+      // eslint-disable-next-line
+      setCurentUser(userToEdit);
+    } else {
+      setCurentUser({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        id: null,
+      });
+    }
+  }, [userToEdit]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -19,11 +42,28 @@ function ContactForm(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (id) {
-      props.updateUser(curentUser);
+    if (curentUser.id) {
+      dispatch(updateUser(curentUser));
     } else {
-      props.addUser(curentUser);
+      dispatch(addContact(curentUser));
+      dispatch(setUserToEdit(null));
+      setCurentUser({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        id: null,
+      });
     }
+  };
+
+  const handleNew = () => {
+    dispatch(setUserToEdit(null));
+  };
+
+  const handleDelete = (id) => {
+    dispatch(delateUsers(id));
+    dispatch(setUserToEdit(null));
   };
 
   const { firstName, lastName, email, phone, id } = curentUser;
@@ -104,7 +144,7 @@ function ContactForm(props) {
 
       <div className="btn-holder">
         <div className="left-btn">
-          <button className="btn-new" onClick={props.cancelEdit}>
+          <button className="btn-new" onClick={handleNew}>
             New
           </button>
         </div>
@@ -120,7 +160,7 @@ function ContactForm(props) {
           <button
             className="btn-del"
             style={id ? {} : { display: "none" }}
-            onClick={() => props.deleteUser(id)}
+            onClick={() => handleDelete(id)}
           >
             Delete
           </button>

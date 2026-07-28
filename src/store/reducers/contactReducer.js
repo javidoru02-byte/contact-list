@@ -1,7 +1,6 @@
-import { contactsState } from "../../model/initialContacts";
-
 const initialState = {
-  contacts: contactsState,
+  contacts: [],
+  userToEdit: null,
 };
 
 export default function contactReducer(
@@ -21,9 +20,20 @@ export default function contactReducer(
     case "updateUser":
       return {
         ...state,
-        contacts: statusbar.contacts.map((contact) =>
-          contact.id === payload ? payload : contact,
+        contacts: state.contacts.map((contact) =>
+          contact.id === payload.id ? payload : contact,
         ),
+      };
+    case "setUser":
+      return {
+        ...state,
+        contacts: payload,
+      };
+
+    case "setUserToEdit":
+      return {
+        ...state,
+        userToEdit: payload,
       };
 
     default:
