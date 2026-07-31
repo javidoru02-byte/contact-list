@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   addContact,
-  updateUser,
-  delateUsers,
-  setUserToEdit,
+  updateContact,
+  deleteContact,
+  setContactToEdit,
 } from "../../store/action/contactActions";
 import "./ContactForm.css";
 
@@ -43,10 +43,10 @@ function ContactForm() {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (curentUser.id) {
-      dispatch(updateUser(curentUser));
+      dispatch(updateContact(curentUser));
     } else {
       dispatch(addContact(curentUser));
-      dispatch(setUserToEdit(null));
+      dispatch(setContactToEdit(null));
       setCurentUser({
         firstName: "",
         lastName: "",
@@ -58,12 +58,12 @@ function ContactForm() {
   };
 
   const handleNew = () => {
-    dispatch(setUserToEdit(null));
+    dispatch(setContactToEdit(null));
   };
 
   const handleDelete = (id) => {
-    dispatch(delateUsers(id));
-    dispatch(setUserToEdit(null));
+    dispatch(deleteContact(id));
+    dispatch(setContactToEdit(null));
   };
 
   const { firstName, lastName, email, phone, id } = curentUser;

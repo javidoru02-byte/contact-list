@@ -1,6 +1,6 @@
 const initialState = {
   contacts: [],
-  userToEdit: null,
+  contactToEdit: null,
 };
 
 export default function contactReducer(
@@ -11,29 +11,29 @@ export default function contactReducer(
     case "addContact":
       return { ...state, contacts: [...state.contacts, payload] };
 
-    case "deleteUser":
+    case "deleteContact":
       return {
         ...state,
         contacts: state.contacts.filter((contact) => contact.id !== payload),
       };
 
-    case "updateUser":
+    case "updateContact":
       return {
         ...state,
         contacts: state.contacts.map((contact) =>
           contact.id === payload.id ? payload : contact,
         ),
       };
-    case "setUser":
+    case "setContact":
       return {
         ...state,
         contacts: payload,
       };
 
-    case "setUserToEdit":
+    case "setContactToEdit":
       return {
         ...state,
-        userToEdit: payload,
+        cntactToEdit: payload,
       };
 
     default:

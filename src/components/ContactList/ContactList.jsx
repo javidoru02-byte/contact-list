@@ -2,9 +2,9 @@ import "./ContactList.css";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  getUsers,
-  delateUsers,
-  setUserToEdit,
+  setContact,
+  deleteContact,
+  setContactToEdit,
 } from "../../store/action/contactActions";
 
 export const ContactList = () => {
@@ -12,12 +12,12 @@ export const ContactList = () => {
   const contacts = useSelector((state) => state.contacts);
 
   useEffect(() => {
-    dispatch(getUsers());
+    dispatch(setContact());
   }, [dispatch]);
 
   const hendleDoubleClick = (contact) => {
     //console.log("Клік спрацював", contact);
-    dispatch(setUserToEdit(contact));
+    dispatch(setContactToEdit(contact));
   };
 
   return (
@@ -33,7 +33,7 @@ export const ContactList = () => {
 
           <span
             className="contact-delete"
-            onClick={() => dispatch(delateUsers(contact.id))}
+            onClick={() => dispatch(deleteContact(contact.id))}
           >
             X
           </span>
