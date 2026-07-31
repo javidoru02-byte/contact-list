@@ -16,8 +16,8 @@ export const ContactList = () => {
   }, [dispatch]);
 
   const hendleDoubleClick = (contact) => {
-    //console.log("Клік спрацював", contact);
-    dispatch(setContactToEdit(contact));
+    console.log("Клік спрацював", contact);
+    dispatch(setContactToEdit({ ...contact }));
   };
 
   return (

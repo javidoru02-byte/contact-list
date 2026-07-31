@@ -33,7 +33,7 @@ export default function contactReducer(
     case "setContactToEdit":
       return {
         ...state,
-        cntactToEdit: payload,
+        contactToEdit: payload,
       };
 
     default:

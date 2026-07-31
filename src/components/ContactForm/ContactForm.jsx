@@ -8,30 +8,26 @@ import {
 } from "../../store/action/contactActions";
 import "./ContactForm.css";
 
+const EMPTY_USER = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+  id: null,
+};
+
 function ContactForm() {
   const dispatch = useDispatch();
-  const userToEdit = useSelector((state) => state.userToEdit);
+  const userToEdit = useSelector((state) => state.contactToEdit);
 
-  const [curentUser, setCurentUser] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    id: null,
-  });
+  const [curentUser, setCurentUser] = useState(EMPTY_USER);
 
   useEffect(() => {
     if (userToEdit) {
       // eslint-disable-next-line
-      setCurentUser(userToEdit);
+      setCurentUser({ ...userToEdit });
     } else {
-      setCurentUser({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-        id: null,
-      });
+      setCurentUser(EMPTY_USER);
     }
   }, [userToEdit]);
 
@@ -40,30 +36,24 @@ function ContactForm() {
     setCurentUser({ ...curentUser, [name]: value });
   };
 
+  const setContactToEditToNull = () => {
+    dispatch(setContactToEdit(null));
+    setCurentUser(EMPTY_USER);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     if (curentUser.id) {
       dispatch(updateContact(curentUser));
     } else {
       dispatch(addContact(curentUser));
-      dispatch(setContactToEdit(null));
-      setCurentUser({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-        id: null,
-      });
     }
-  };
-
-  const handleNew = () => {
-    dispatch(setContactToEdit(null));
+    setContactToEditToNull();
   };
 
   const handleDelete = (id) => {
     dispatch(deleteContact(id));
-    dispatch(setContactToEdit(null));
+    setContactToEditToNull();
   };
 
   const { firstName, lastName, email, phone, id } = curentUser;
@@ -144,7 +134,7 @@ function ContactForm() {
 
       <div className="btn-holder">
         <div className="left-btn">
-          <button className="btn-new" onClick={handleNew}>
+          <button className="btn-new" onClick={setContactToEditToNull}>
             New
           </button>
         </div>
