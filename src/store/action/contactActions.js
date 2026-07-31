@@ -1,11 +1,16 @@
-import axios from "axios";
-
-const dbURL = "http://localhost:5000/users";
+import { contactAPI } from "../../services/contactService";
+import {
+  SET_CONTACT,
+  DELETE_CONTACT,
+  ADD_CONTACT,
+  UPDATE_CONTACT,
+  SET_CONTACT_TO_EDIT,
+} from "./types";
 
 export const setContact = () => async (dispatch) => {
   try {
-    const resp = await axios.get(dbURL);
-    dispatch({ type: "setContact", payload: resp.data });
+    const resp = await contactAPI.getAll();
+    dispatch({ type: SET_CONTACT, payload: resp.data });
   } catch (error) {
     console.error("Помилка при завантаженні", error);
   }
@@ -13,8 +18,8 @@ export const setContact = () => async (dispatch) => {
 
 export const deleteContact = (id) => async (dispatch) => {
   try {
-    await axios.delete(dbURL + "/" + id);
-    dispatch({ type: "deleteContact", payload: id });
+    await contactAPI.delete(id);
+    dispatch({ type: DELETE_CONTACT, payload: id });
   } catch (error) {
     console.error("Помилка при видаленні", error);
   }
@@ -22,8 +27,8 @@ export const deleteContact = (id) => async (dispatch) => {
 
 export const addContact = (newUser) => async (dispatch) => {
   try {
-    const resp = await axios.post(dbURL, newUser);
-    dispatch({ type: "addContact", payload: resp.data });
+    const resp = await contactAPI.create(newUser);
+    dispatch({ type: ADD_CONTACT, payload: resp.data });
   } catch (error) {
     console.error("Помилка при додаванні", error);
   }
@@ -31,14 +36,14 @@ export const addContact = (newUser) => async (dispatch) => {
 
 export const updateContact = (updatedUser) => async (dispatch) => {
   try {
-    const resp = await axios.put(`${dbURL}/${updatedUser.id}`, updatedUser);
-    dispatch({ type: "updateContact", payload: resp.data });
+    const resp = await contactAPI.update(updatedUser);
+    dispatch({ type: UPDATE_CONTACT, payload: resp.data });
   } catch (error) {
     console.error("Помилка при оновленні", error);
   }
 };
 
 export const setContactToEdit = (contact) => ({
-  type: "setContactToEdit",
+  type: SET_CONTACT_TO_EDIT,
   payload: contact,
 });

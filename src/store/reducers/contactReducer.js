@@ -8,29 +8,29 @@ export default function contactReducer(
   { type, payload },
 ) {
   switch (type) {
-    case "addContact":
+    case "ADD_CONTACT":
       return { ...state, contacts: [...state.contacts, payload] };
 
-    case "deleteContact":
+    case "DELETE_CONTACT":
       return {
         ...state,
         contacts: state.contacts.filter((contact) => contact.id !== payload),
       };
 
-    case "updateContact":
+    case "UPDATE_CONTACT":
       return {
         ...state,
         contacts: state.contacts.map((contact) =>
           contact.id === payload.id ? payload : contact,
         ),
       };
-    case "setContact":
+    case "SET_CONTACT":
       return {
         ...state,
         contacts: payload,
       };
 
-    case "setContactToEdit":
+    case "SET_CONTACT_TO_EDIT":
       return {
         ...state,
         contactToEdit: payload,
