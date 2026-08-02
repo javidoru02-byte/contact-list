@@ -1,8 +1,16 @@
 import { applyMiddleware, createStore } from "redux";
-import { thunk } from "redux-thunk";
-import reducer from "./reducers/contactReducer";
+import { createLogger } from "redux-logger";
 import { composeWithDevTools } from "@redux-devtools/extension";
+import reducer from "./reducers/contactReducer";
+import createSagaMiddleware from "redux-saga";
+import rootSaga from "../saga";
 
-const store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)));
+const sagaMiddleware = createSagaMiddleware();
+const logger = createLogger();
+const middleware = applyMiddleware(sagaMiddleware, logger);
+
+const store = createStore(reducer, composeWithDevTools(middleware));
+
+sagaMiddleware.run(rootSaga);
 
 export default store;

@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  addContact,
-  updateContact,
-  deleteContact,
+  addContactAction,
+  putContactAction,
+  deleteContactAction,
   setContactToEdit,
 } from "../../store/action/contactActions";
 import "./ContactForm.css";
@@ -44,15 +44,15 @@ function ContactForm() {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (curentUser.id) {
-      dispatch(updateContact(curentUser));
+      dispatch(putContactAction(curentUser));
     } else {
-      dispatch(addContact(curentUser));
+      dispatch(addContactAction(curentUser));
+      setContactToEditToNull();
     }
-    setContactToEditToNull();
   };
 
   const handleDelete = (id) => {
-    dispatch(deleteContact(id));
+    dispatch(deleteContactAction(id));
     setContactToEditToNull();
   };
 

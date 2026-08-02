@@ -1,49 +1,123 @@
-import { contactAPI } from "../../services/contactService";
-import {
-  SET_CONTACT,
-  DELETE_CONTACT,
-  ADD_CONTACT,
-  UPDATE_CONTACT,
-  SET_CONTACT_TO_EDIT,
-} from "./types";
+import {SET_CONTACT_TO_EDIT} from "./types";
+import ACTION_TYPES from "./types";
 
-export const setContact = () => async (dispatch) => {
-  try {
-    const resp = await contactAPI.getAll();
-    dispatch({ type: SET_CONTACT, payload: resp.data });
-  } catch (error) {
-    console.error("Помилка при завантаженні", error);
-  }
+//ADD
+
+export const addContactAction = (payload) => {
+  return {
+    type: ACTION_TYPES.ADD_CONTACT_ACTION,
+    payload,
+  };
 };
 
-export const deleteContact = (id) => async (dispatch) => {
-  try {
-    await contactAPI.delete(id);
-    dispatch({ type: DELETE_CONTACT, payload: id });
-  } catch (error) {
-    console.error("Помилка при видаленні", error);
-  }
+export const addContactReqest = () => {
+  return {
+    type: ACTION_TYPES.ADD_CONTACT_REQEST,
+  };
 };
 
-export const addContact = (newUser) => async (dispatch) => {
-  try {
-    const resp = await contactAPI.create(newUser);
-    dispatch({ type: ADD_CONTACT, payload: resp.data });
-  } catch (error) {
-    console.error("Помилка при додаванні", error);
-  }
+export const addContactSuccess = (payload) => {
+  return {
+    type: ACTION_TYPES.ADD_CONTACT_SUCCESS,
+    payload,
+  };
 };
 
-export const updateContact = (updatedUser) => async (dispatch) => {
-  try {
-    const resp = await contactAPI.update(updatedUser);
-    dispatch({ type: UPDATE_CONTACT, payload: resp.data });
-  } catch (error) {
-    console.error("Помилка при оновленні", error);
-  }
+export const addContactError = (payload) => {
+  return {
+    type: ACTION_TYPES.ADD_CONTACT_ERROR,
+    payload,
+  };
 };
 
-export const setContactToEdit = (contact) => ({
+//DEL
+
+export const deleteContactAction = (payload) => {
+  return {
+    type: ACTION_TYPES.DELETE_CONTACT_ACTION,
+    payload,
+  };
+};
+
+export const deleteContactReqest = () => {
+  return {
+    type: ACTION_TYPES.DELETE_CONTACT_REQEST,
+  };
+};
+
+export const deleteContactSuccess = (payload) => {
+  return {
+    type: ACTION_TYPES.DELETE_CONTACT_SUCCESS,
+    payload,
+  };
+};
+
+export const deleteContactError = (payload) => {
+  return {
+    type: ACTION_TYPES.DELETE_CONTACT_ERROR,
+    payload,
+  };
+};
+
+//PUT
+
+export const putContactAction = (payload) => {
+  return {
+    type: ACTION_TYPES.PUT_CONTACT_ACTION,
+    payload,
+  };
+};
+
+export const putContactReqest = () => {
+  return {
+    type: ACTION_TYPES.PUT_CONTACT_REQEST,
+  };
+};
+
+export const putContactSuccess = (payload) => {
+  return {
+    type: ACTION_TYPES.PUT_CONTACT_SUCCESS,
+    payload,
+  };
+};
+
+export const putContactError = (payload) => {
+  return {
+    type: ACTION_TYPES.PUT_CONTACT_ERROR,
+    payload,
+  };
+};
+
+//GET
+
+export const getContactAction = () => {
+  return {
+    type: ACTION_TYPES.GET_CONTACT_ACTION,
+  };
+};
+
+export const getContactReqest = () => {
+  return {
+    type: ACTION_TYPES.GET_CONTACT_REQEST,
+  };
+};
+
+export const getContactSuccess = (payload) => {
+  return {
+    type: ACTION_TYPES.GET_CONTACT_SUCCESS,
+    payload,
+  };
+};
+
+export const getContactError = (payload) => {
+  return {
+    type: ACTION_TYPES.GET_CONTACT_ERROR,
+    payload,
+  };
+};
+
+//setToEdit
+export const setContactToEdit = (payload) => ({
   type: SET_CONTACT_TO_EDIT,
-  payload: contact,
+  payload,
 });
