@@ -1,6 +1,7 @@
 import "./ContactList.css";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { contactAPI } from "../../services/contactService";
 import {
   setContact,
   deleteContact,
@@ -12,12 +13,29 @@ export const ContactList = () => {
   const contacts = useSelector((state) => state.contacts);
 
   useEffect(() => {
-    dispatch(setContact());
+    const loadContacts = async () => {
+      try {
+        const resp = await contactAPI.getAll();
+        dispatch(setContact(resp.data));
+      } catch (error) {
+        console.error("Помилка при завантаженні", error);
+      }
+    };
+    loadContacts();
   }, [dispatch]);
 
   const hendleDoubleClick = (contact) => {
     console.log("Клік спрацював", contact);
     dispatch(setContactToEdit({ ...contact }));
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await contactAPI.delete(id);
+      dispatch(deleteContact(id));
+    } catch (error) {
+      console.error("Помилка при видаленні", error);
+    }
   };
 
   return (
@@ -33,7 +51,7 @@ export const ContactList = () => {
 
           <span
             className="contact-delete"
-            onClick={() => dispatch(deleteContact(contact.id))}
+            onClick={() => handleDelete(contact.id)}
           >
             X
           </span>

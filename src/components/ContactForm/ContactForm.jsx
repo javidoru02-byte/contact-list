@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { contactAPI } from "../../services/contactService";
 import {
   addContact,
   updateContact,
@@ -41,19 +42,30 @@ function ContactForm() {
     setCurentUser(EMPTY_USER);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    if (curentUser.id) {
-      dispatch(updateContact(curentUser));
-    } else {
-      dispatch(addContact(curentUser));
+    try {
+      if (curentUser.id) {
+        const resp = await contactAPI.update(curentUser);
+        dispatch(updateContact(resp.data));
+      } else {
+        const resp = await contactAPI.create(curentUser);
+        dispatch(addContact(resp.data));
+        setContactToEditToNull();
+      }
+    } catch (error) {
+      console.error("Помилка при збереженні", error);
     }
-    setContactToEditToNull();
   };
 
-  const handleDelete = (id) => {
-    dispatch(deleteContact(id));
-    setContactToEditToNull();
+  const handleDelete = async (id) => {
+    try {
+      await contactAPI.delete(id);
+      dispatch(deleteContact(id));
+      setContactToEditToNull();
+    } catch (error) {
+      console.error("Помилка при видаленні", error);
+    }
   };
 
   const { firstName, lastName, email, phone, id } = curentUser;
