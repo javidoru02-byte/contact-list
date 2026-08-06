@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  addContactAction,
-  putContactAction,
-  deleteContactAction,
-  setContactToEdit,
-} from "../../store/action/contactActions";
+  addContact,
+  deleteContact,
+  updateContactAsync,
+  clearContactToEdit,
+} from "../../store/slices/contactSlice";
 import "./ContactForm.css";
 
 const EMPTY_USER = {
@@ -18,7 +18,7 @@ const EMPTY_USER = {
 
 function ContactForm() {
   const dispatch = useDispatch();
-  const userToEdit = useSelector((state) => state.contactToEdit);
+  const userToEdit = useSelector((state) => state.contacts.contactToEdit);
 
   const [curentUser, setCurentUser] = useState(EMPTY_USER);
 
@@ -37,22 +37,22 @@ function ContactForm() {
   };
 
   const setContactToEditToNull = () => {
-    dispatch(setContactToEdit(null));
+    dispatch(clearContactToEdit());
     setCurentUser(EMPTY_USER);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     if (curentUser.id) {
-      dispatch(putContactAction(curentUser));
+      dispatch(updateContactAsync(curentUser));
     } else {
-      dispatch(addContactAction(curentUser));
+      dispatch(addContact(curentUser));
       setContactToEditToNull();
     }
   };
 
   const handleDelete = (id) => {
-    dispatch(deleteContactAction(id));
+    dispatch(deleteContact(id));
     setContactToEditToNull();
   };
 

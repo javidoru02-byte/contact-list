@@ -1,18 +1,11 @@
 {
-  "users": [
+  "contacts": [
     {
       "firstName": "david",
       "lastName": "zhuchenko",
-      "email": "javiрoru02@gmail.com",
+      "email": "javidoru02@gmail.com",
       "phone": "0933679509",
       "id": "yk60m_cIICA"
-    },
-    {
-      "firstName": "ilia",
-      "lastName": "icalsd",
-      "email": "javidoru02@gmail.com",
-      "phone": "wewe",
-      "id": "Yw67sTPiVgk"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
