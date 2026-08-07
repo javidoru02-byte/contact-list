@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 import {
   addContact,
@@ -16,39 +18,50 @@ const EMPTY_USER = {
   id: null,
 };
 
+const validationSchema = Yup.object().shape({
+  firstName: Yup.string().required("First name is required"),
+  lastName: Yup.string().required("Last name is required"),
+  email: Yup.string()
+    .trim()
+    .email("Invalid email address")
+    .required("Email is required"),
+  phone: Yup.string()
+    .trim()
+    .matches(/^\d{10}$/, "Phone number must be 10 digits")
+    .required("Phone number is required"),
+});
+
 function ContactForm() {
   const dispatch = useDispatch();
   const userToEdit = useSelector((state) => state.contacts.contactToEdit);
 
-  const [curentUser, setCurentUser] = useState(EMPTY_USER);
+  const formik = useFormik({
+    initialValues: EMPTY_USER,
+    enableReinitialize: true,
+    validationSchema,
+    validateOnMount: true,
+    onSubmit: (values) => {
+      if (values.id) {
+        dispatch(updateContactAsync(values));
+      } else {
+        dispatch(addContact(values));
+      }
+      setContactToEditToNull();
+    },
+  });
 
   useEffect(() => {
     if (userToEdit) {
       // eslint-disable-next-line
-      setCurentUser({ ...userToEdit });
+      formik.setValues({ ...userToEdit });
     } else {
-      setCurentUser(EMPTY_USER);
+      formik.setValues(EMPTY_USER);
     }
   }, [userToEdit]);
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setCurentUser({ ...curentUser, [name]: value });
-  };
-
   const setContactToEditToNull = () => {
     dispatch(clearContactToEdit());
-    setCurentUser(EMPTY_USER);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (curentUser.id) {
-      dispatch(updateContactAsync(curentUser));
-    } else {
-      dispatch(addContact(curentUser));
-      setContactToEditToNull();
-    }
+    formik.resetForm({ values: EMPTY_USER });
   };
 
   const handleDelete = (id) => {
@@ -56,9 +69,16 @@ function ContactForm() {
     setContactToEditToNull();
   };
 
-  const { firstName, lastName, email, phone, id } = curentUser;
-  const isFormInvalid =
-    !firstName.trim() || !lastName.trim() || !email.trim() || !phone.trim();
+  const {
+    values,
+    errors,
+    touched,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    setFieldValue,
+    isValid,
+  } = formik;
 
   return (
     <div>
@@ -68,16 +88,20 @@ function ContactForm() {
             type="text"
             name="firstName"
             placeholder="FirstName"
-            value={firstName}
+            value={values.firstName}
             onChange={handleChange}
+            onBlur={handleBlur}
           />
           <button
             type="button"
             className="clear-btn"
-            onClick={() => setCurentUser({ ...curentUser, firstName: "" })}
+            onClick={() => setFieldValue("firstName", "")}
           >
             x
           </button>
+          {touched.firstName && errors.firstName && (
+            <div className="field-error">{errors.firstName}</div>
+          )}
         </div>
 
         <div className="input-container">
@@ -85,16 +109,20 @@ function ContactForm() {
             type="text"
             name="lastName"
             placeholder="LastName"
-            value={lastName}
+            value={values.lastName}
             onChange={handleChange}
+            onBlur={handleBlur}
           />
           <button
             type="button"
             className="clear-btn"
-            onClick={() => setCurentUser({ ...curentUser, lastName: "" })}
+            onClick={() => setFieldValue("lastName", "")}
           >
             x
           </button>
+          {touched.lastName && errors.lastName && (
+            <div className="field-error">{errors.lastName}</div>
+          )}
         </div>
 
         <div className="input-container">
@@ -102,16 +130,20 @@ function ContactForm() {
             type="email"
             name="email"
             placeholder="Email"
-            value={email}
+            value={values.email}
             onChange={handleChange}
+            onBlur={handleBlur}
           />
           <button
             type="button"
             className="clear-btn"
-            onClick={() => setCurentUser({ ...curentUser, email: "" })}
+            onClick={() => setFieldValue("email", "")}
           >
             x
           </button>
+          {touched.email && errors.email && (
+            <div className="field-error">{errors.email}</div>
+          )}
         </div>
 
         <div className="input-container">
@@ -119,16 +151,20 @@ function ContactForm() {
             type="tel"
             name="phone"
             placeholder="Phone"
-            value={phone}
+            value={values.phone}
             onChange={handleChange}
+            onBlur={handleBlur}
           />
           <button
             type="button"
             className="clear-btn"
-            onClick={() => setCurentUser({ ...curentUser, phone: "" })}
+            onClick={() => setFieldValue("phone", "")}
           >
             x
           </button>
+          {touched.phone && errors.phone && (
+            <div className="field-error">{errors.phone}</div>
+          )}
         </div>
       </form>
 
@@ -142,15 +178,15 @@ function ContactForm() {
           <button
             className="btn-add"
             onClick={handleSubmit}
-            disabled={isFormInvalid}
+            disabled={!isValid}
           >
             Save
           </button>
 
           <button
             className="btn-del"
-            style={id ? {} : { display: "none" }}
-            onClick={() => handleDelete(id)}
+            style={values.id ? {} : { display: "none" }}
+            onClick={() => handleDelete(values.id)}
           >
             Delete
           </button>
