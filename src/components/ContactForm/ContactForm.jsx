@@ -3,12 +3,19 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 import {
+  Paper,
+  Box,
+  TextField,
+  Typography,
+  Button,
+  Stack,
+} from "@mui/material";
+import {
   addContact,
   deleteContact,
   updateContactAsync,
   clearContactToEdit,
 } from "../../store/slices/contactSlice";
-import "./ContactForm.css";
 
 const EMPTY_USER = {
   firstName: "",
@@ -18,17 +25,17 @@ const EMPTY_USER = {
   id: null,
 };
 
-const validationSchema = Yup.object().shape({
-  firstName: Yup.string().required("First name is required"),
-  lastName: Yup.string().required("Last name is required"),
+const validationSchema = Yup.object({
+  firstName: Yup.string().trim().required("First name is required"),
+  lastName: Yup.string().trim().required("Last name is required"),
   email: Yup.string()
     .trim()
     .email("Invalid email address")
     .required("Email is required"),
   phone: Yup.string()
     .trim()
-    .matches(/^\d{10}$/, "Phone number must be 10 digits")
-    .required("Phone number is required"),
+    .matches(/^\+?[0-9]{7,15}$/, "Invalid phone number")
+    .required("Phone is required"),
 });
 
 function ContactForm() {
@@ -45,18 +52,18 @@ function ContactForm() {
         dispatch(updateContactAsync(values));
       } else {
         dispatch(addContact(values));
+        setContactToEditToNull();
       }
-      setContactToEditToNull();
     },
   });
 
   useEffect(() => {
     if (userToEdit) {
-      // eslint-disable-next-line
       formik.setValues({ ...userToEdit });
     } else {
       formik.setValues(EMPTY_USER);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userToEdit]);
 
   const setContactToEditToNull = () => {
@@ -76,123 +83,109 @@ function ContactForm() {
     handleChange,
     handleBlur,
     handleSubmit,
-    setFieldValue,
     isValid,
   } = formik;
 
+  const fieldProps = (name, label, type = "text") => ({
+    fullWidth: true,
+    name,
+    label,
+    type,
+    value: values[name],
+    onChange: handleChange,
+    onBlur: handleBlur,
+    error: touched[name] && Boolean(errors[name]),
+    helperText: touched[name] && errors[name],
+    variant: "standard",
+    sx: {
+      "& .MuiInput-underline:before": { borderBottomColor: "secondary.main" },
+      "& .MuiInputLabel-root": {
+        fontFamily: '"IBM Plex Mono", monospace',
+        fontSize: 13,
+        letterSpacing: "0.05em",
+      },
+    },
+  });
+
   return (
-    <div>
-      <form className="create-contact" onSubmit={handleSubmit}>
-        <div className="input-container">
-          <input
-            type="text"
-            name="firstName"
-            placeholder="FirstName"
-            value={values.firstName}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          <button
-            type="button"
-            className="clear-btn"
-            onClick={() => setFieldValue("firstName", "")}
-          >
-            x
-          </button>
-          {touched.firstName && errors.firstName && (
-            <div className="field-error">{errors.firstName}</div>
-          )}
-        </div>
+    <Paper
+      elevation={0}
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{
+        position: "relative",
+        border: "1.5px solid",
+        borderColor: "secondary.main",
+        p: 3,
+        pl: 5,
 
-        <div className="input-container">
-          <input
-            type="text"
-            name="lastName"
-            placeholder="LastName"
-            value={values.lastName}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          <button
-            type="button"
-            className="clear-btn"
-            onClick={() => setFieldValue("lastName", "")}
-          >
-            x
-          </button>
-          {touched.lastName && errors.lastName && (
-            <div className="field-error">{errors.lastName}</div>
-          )}
-        </div>
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          top: 0,
+          bottom: 0,
+          left: 28,
+          width: "1.5px",
+          bgcolor: "secondary.main",
+          opacity: 0.5,
+        },
+      }}
+    >
+      <Typography
+        variant="overline"
+        sx={{
+          display: "block",
+          mb: 2,
+          fontFamily: '"Special Elite", monospace',
+          color: "text.secondary",
+        }}
+      >
+        {values.id ? "Edit Entry" : "New Entry"}
+      </Typography>
 
-        <div className="input-container">
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={values.email}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          <button
-            type="button"
-            className="clear-btn"
-            onClick={() => setFieldValue("email", "")}
-          >
-            x
-          </button>
-          {touched.email && errors.email && (
-            <div className="field-error">{errors.email}</div>
-          )}
-        </div>
+      <Stack spacing={2.5}>
+        <TextField {...fieldProps("firstName", "First name")} />
+        <TextField {...fieldProps("lastName", "Last name")} />
+        <TextField {...fieldProps("email", "Email", "email")} />
+        <TextField {...fieldProps("phone", "Phone", "tel")} />
+      </Stack>
 
-        <div className="input-container">
-          <input
-            type="tel"
-            name="phone"
-            placeholder="Phone"
-            value={values.phone}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          <button
-            type="button"
-            className="clear-btn"
-            onClick={() => setFieldValue("phone", "")}
-          >
-            x
-          </button>
-          {touched.phone && errors.phone && (
-            <div className="field-error">{errors.phone}</div>
-          )}
-        </div>
-      </form>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          mt: 3,
+        }}
+      >
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={setContactToEditToNull}
+        >
+          New
+        </Button>
 
-      <div className="btn-holder">
-        <div className="left-btn">
-          <button className="btn-new" onClick={setContactToEditToNull}>
-            New
-          </button>
-        </div>
-        <div className="right-btn">
-          <button
-            className="btn-add"
-            onClick={handleSubmit}
+        <Stack direction="row" spacing={1}>
+          {values.id && (
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => handleDelete(values.id)}
+            >
+              Delete
+            </Button>
+          )}
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
             disabled={!isValid}
           >
             Save
-          </button>
-
-          <button
-            className="btn-del"
-            style={values.id ? {} : { display: "none" }}
-            onClick={() => handleDelete(values.id)}
-          >
-            Delete
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </Stack>
+      </Box>
+    </Paper>
   );
 }
 
